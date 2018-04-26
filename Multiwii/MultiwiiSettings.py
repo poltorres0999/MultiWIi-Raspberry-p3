@@ -15,6 +15,7 @@ class Settings(object):
         self.MSP_RC = False
         self.MSP_ATTITUDE = False
         self.MSP_ALTITUDE = False
+        self.TELEMETRY_TIME = 1
 
         # Raspberry Pi UDP Server attributes
         self.udp_communication = False

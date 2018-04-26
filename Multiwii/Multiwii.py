@@ -128,8 +128,6 @@ class MultiWii(object):
 
         total_data, elapsed = self.get_data(MultiWii.ALTITUDE)
 
-        print(total_data)
-
         self.drone.altitude['estalt'] = float(total_data[0])
         self.drone.altitude['vario'] = float(total_data[1])
         self.drone.altitude['elapsed'] = round(elapsed, 3)
@@ -210,7 +208,33 @@ class MultiWii(object):
 
         self.send_cmd(8, MultiWii.SET_RAW_RC, rc_data)
 
+    def telemetry_loop(self):
 
+        timer = time.time()
+
+        while True:
+
+            if time.time() - timer >= self.settings.TELEMETRY_TIME:
+
+                if self.settings.MSP_ALTITUDE:
+                    self.get_altitude()
+
+                if self.settings.MSP_ATTITUDE:
+                    self.get_attitude()
+
+                if self.settings.MSP_RAW_IMU:
+                    self.get_raw_imu()
+
+                if self.settings.MSP_RC:
+                    self.get_rc()
+
+                if self.settings.MSP_MOTOR:
+                    self.get_motor()
+
+                if self.settings.MSP_SERVO:
+                    self.get_servo()
+
+                timer = time.time()
 
 
 
