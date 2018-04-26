@@ -1,6 +1,6 @@
 import time
 
-from src.Multiwii.Multiwii import MultiWii
+from Multiwii import MultiWii
 
 
 class Test:
