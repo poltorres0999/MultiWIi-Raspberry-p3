@@ -2,7 +2,7 @@ import time
 import serial
 import struct
 
-from src.Multiwii import MultiwiiSettings, Drone
+from Multiwii import MultiwiiSettings, Drone
 
 
 class MultiWii(object):
@@ -111,14 +111,18 @@ class MultiWii(object):
 
     def arm(self):
 
-        start = time.time()
-        while (time.time() - start) < 0.5:
-            self.set_rc([1500, 1500, 2000, 1000])
+        if not self.drone.armed:
+            start = time.time()
+            while (time.time() - start) < 0.5:
+                self.set_rc([1500, 1500, 2000, 1000])
+            self.drone.armed = True
 
     def disarm(self):
+
         start = time.time()
         while (time.time() - start) < 0.5:
             self.set_rc([1500, 1500, 1000, 1000])
+        self.drone.armed = False
 
     def get_altitude(self):
 

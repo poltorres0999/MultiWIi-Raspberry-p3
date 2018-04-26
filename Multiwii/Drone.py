@@ -1,6 +1,7 @@
 class Drone:
 
     def __init__(self):
+        self.armed = False
         self.ident = {'version': 0, 'multitype': 0, 'capability': 0}
         self.attitude = {'angx': 0, 'angy': 0, 'heading': 0, 'elapsed': 0, 'timestamp': 0}
         self.altitude = {'estalt': 0, 'vario': 0, 'elapsed': 0, 'timestamp': 0}
