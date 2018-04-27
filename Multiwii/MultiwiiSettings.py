@@ -9,16 +9,15 @@ class Settings(object):
         # Decides which functions will be executed in the loop method of the Multiwii
         self.MSP_IDENT = False
         self.MSP_PID = False
-        self.MSP_RAW_IMU = False
+        self.MSP_RAW_IMU = True
         self.MSP_SERVO = False
         self.MSP_MOTOR = False
         self.MSP_RC = False
         self.MSP_ATTITUDE = False
-        self.MSP_ALTITUDE = False
+        self.MSP_ALTITUDE = True
         self.TELEMETRY_TIME = 1
 
         # Raspberry Pi UDP Server attributes
-        self.udp_communication = False
         self.ip_address = "169.254.248.2"
         self.port = 4445
 

@@ -1,3 +1,4 @@
+import socket
 import time
 import serial
 import struct
@@ -6,7 +7,6 @@ from Multiwii import MultiwiiSettings, Drone
 
 
 class MultiWii(object):
-
     # Multiwii Serial Protocol message IDs.
     # Getters
     IDENT = 100
@@ -49,6 +49,7 @@ class MultiWii(object):
     def __init__(self):
 
         self.drone = Drone.Drone()
+        self.UDP_server_started = False
 
         try:
             self.settings = MultiwiiSettings.Settings()
@@ -236,19 +237,66 @@ class MultiWii(object):
 
                 timer = time.time()
 
+    def UDP_telemetry_loop(self):
 
+        sock = self.start_UDP_server()
 
+        if self.UDP_server_started:
 
+            timer = time.time()
 
+            while True:
 
+                if time.time() - timer >= self.settings.TELEMETRY_TIME:
 
+                    # need to check byte conversion
+                    if self.settings.MSP_ALTITUDE:
+                        sock.sendto(self.__create_package(109, 8, self.get_altitude()))
 
+                    if self.settings.MSP_ATTITUDE:
+                        self.get_attitude()
 
+                    if self.settings.MSP_RAW_IMU:
+                        self.get_raw_imu()
 
+                    if self.settings.MSP_RC:
+                        self.get_rc()
 
+                    if self.settings.MSP_MOTOR:
+                        self.get_motor()
 
+                    if self.settings.MSP_SERVO:
+                        self.get_servo()
 
+                    timer = time.time()
+        else:
+            return self.UDP_server_started
 
+    def __start_UDP_server(self):
 
+        if not self.UDP_server_started:
 
+            try:
+                address = (self.settings.ip_address, self.settings.port)
+                sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+                print("Socket creation: Socket created!")
+                self.sock.bind(address)
+                print("Socket binding: Socket bound!")
+                self.UDP_server_started = True
+                return sock
 
+            except socket.error as err:
+                print("Error: " + str(err))
+                print("Error starting server: {}".format(err))
+        else:
+            print("Server already started!")
+
+    @staticmethod
+    def __create_package(code, size, data):
+
+        code = struct.pack('<h', code)
+        size = struct.pack('<h', size)
+        data = struct.pack('<h' * int(size / 2)) # int? float?
+        package = code + size + data
+
+        return package

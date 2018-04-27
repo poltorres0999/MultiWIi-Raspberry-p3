@@ -56,6 +56,30 @@ class Test:
         print("Throttle: {}".format(rc["throttle"]))
         print("-------------------\n")
 
+    def test_telemetry(self):
+
+        self.mw.telemetry_loop()
+    '''
+        if self.mw.settings.MSP_ALTITUDE:
+            alt = self.mw.drone.altitude
+            print("-------Altitude--------\n")
+            print("EstAlt: %f cm, Vario: %f") % (alt["estalt"], alt["vario"])
+            print("-----------------------\n")
+
+        if self.mw.settings.MSP_RAW_IMU:
+            raw_imu = self.mw.drone.raw_imu
+            print("------Raw_IMU-------")
+            print("ACC -> accx: %f, accy: %f, accz %f" % (raw_imu["accx"], raw_imu["accy"], raw_imu["accz"]))
+            print("GYRO -> gyrx: %f, gyry: %f, gyrz: %f" % (raw_imu["gyrx"], raw_imu["gyry"], raw_imu["gyrz"]))
+            print("---------------------")
+
+        if self.mw.settings.MSP_RC:
+            rc = self.mw.drone.rc_channels
+            print("--------Rc--------")
+            print("Roll: %f, Pitch: %f, Yaw: %f, Throttle: %f" % (rc["roll"], rc["pitch"], rc["yaw"], rc["throttle"]))
+            print("------------------")
+            
+        '''
 
 def main():
     tests = Test("COM5", False, "", "")
@@ -67,6 +91,8 @@ def main():
         tests.test_altitude()
         tests.test_set_rc()
         time.sleep(0.04)
+        #tests.test_telemetry()
+
 
 
 if __name__ == '__main__':
