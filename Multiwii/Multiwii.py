@@ -103,6 +103,7 @@ class MultiWii(object):
             self.serial.flushInput()
             self.serial.flushOutput()
 
+
             elapsed = time.time() - start
 
             return total_data, elapsed
@@ -295,7 +296,7 @@ class MultiWii(object):
 
         code = struct.pack('<h', code)
         size = struct.pack('<h', size)
-        data = struct.pack('<h' * int(size / 2), data) # int? float?
+        data = struct.pack('<h' * len(data), data) # int? float?
         package = code + size + data
 
         return package
