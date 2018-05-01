@@ -96,13 +96,13 @@ class MultiWii(object):
             preamble = self.serial.read()
             direction = self.serial.read()
             size = struct.unpack('<b', self.serial.read())[0]
+            print(size)
             cmd = self.serial.read()
             data = self.serial.read(size)
             total_data = struct.unpack('<' + 'h' * int((size / 2)), data)
 
             self.serial.flushInput()
             self.serial.flushOutput()
-
 
             elapsed = time.time() - start
 
@@ -130,8 +130,8 @@ class MultiWii(object):
 
         total_data, elapsed = self.get_data(MultiWii.ALTITUDE)
 
-        self.drone.altitude['estalt'] = float(total_data[0])
-        self.drone.altitude['vario'] = float(total_data[1])
+        self.drone.altitude['estalt'] = total_data[0]
+        self.drone.altitude['vario'] = total_data[1]
         self.drone.altitude['elapsed'] = round(elapsed, 3)
         self.drone.altitude['timestamp'] = "%0.2f" % (time.time(),)
 
@@ -166,15 +166,15 @@ class MultiWii(object):
 
         total_data, elapsed = self.get_data(MultiWii.RAW_IMU)
 
-        self.drone.raw_imu['accx'] = float(total_data[0])
-        self.drone.raw_imu['accy'] = float(total_data[1])
-        self.drone.raw_imu['accz'] = float(total_data[2])
-        self.drone.raw_imu['gyrx'] = float(total_data[3])
-        self.drone.raw_imu['gyry'] = float(total_data[4])
-        self.drone.raw_imu['gyrz'] = float(total_data[5])
-        self.drone.raw_imu['magx'] = float(total_data[6])
-        self.drone.raw_imu['magy'] = float(total_data[7])
-        self.drone.raw_imu['magz'] = float(total_data[8])
+        self.drone.raw_imu['accx'] = total_data[0]
+        self.drone.raw_imu['accy'] = total_data[1]
+        self.drone.raw_imu['accz'] = total_data[2]
+        self.drone.raw_imu['gyrx'] = total_data[3]
+        self.drone.raw_imu['gyry'] = total_data[4]
+        self.drone.raw_imu['gyrz'] = total_data[5]
+        self.drone.raw_imu['magx'] = total_data[6]
+        self.drone.raw_imu['magy'] = total_data[7]
+        self.drone.raw_imu['magz'] = total_data[8]
         self.drone.raw_imu['elapsed'] = round(elapsed, 3)
         self.drone.raw_imu['timestamp'] = "%0.2f" % (time.time(),)
 
@@ -184,10 +184,10 @@ class MultiWii(object):
 
         total_data, elapsed = self.get_data(MultiWii.MOTOR)
 
-        self.drone.motor['m1'] = float(total_data[0])
-        self.drone.motor['m2'] = float(total_data[1])
-        self.drone.motor['m3'] = float(total_data[2])
-        self.drone.motor['m4'] = float(total_data[3])
+        self.drone.motor['m1'] = total_data[0]
+        self.drone.motor['m2'] = total_data[1]
+        self.drone.motor['m3'] = total_data[2]
+        self.drone.motor['m4'] = total_data[3]
         self.drone.motor['elapsed'] = "%0.3f" % (elapsed,)
         self.drone.motor['timestamp'] = "%0.2f" % (time.time(),)
 
@@ -197,10 +197,10 @@ class MultiWii(object):
 
         total_data, elapsed = self.get_data(MultiWii.SERVO)
 
-        self.drone.servo['s1'] = float(total_data[0])
-        self.drone.servo['s2'] = float(total_data[1])
-        self.drone.servo['s3'] = float(total_data[2])
-        self.drone.servo['s4'] = float(total_data[3])
+        self.drone.servo['s1'] = total_data[0]
+        self.drone.servo['s2'] = total_data[1]
+        self.drone.servo['s3'] = total_data[2]
+        self.drone.servo['s4'] = total_data[3]
         self.drone.servo['elapsed'] = "%0.3f" % (elapsed,)
         self.drone.servo['timestamp'] = "%0.2f" % (time.time(),)
 
@@ -296,7 +296,7 @@ class MultiWii(object):
 
         code = struct.pack('<h', code)
         size = struct.pack('<h', size)
-        data = struct.pack('<h' * len(data), data) # int? float?
+        data = struct.pack('<h' * len(data), data)
         package = code + size + data
 
         return package

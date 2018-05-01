@@ -83,18 +83,16 @@ class Test:
 
 def main():
     tests = Test("COM5", False, "", "")
-    '''
+
     while 1:
         #tests.test_altitude()
         #time.sleep(1)
-        #tests.test_raw_imu()
+        tests.test_raw_imu()
         #tests.test_altitude()
         #tests.test_set_rc()
         #time.sleep(0.04)
         #tests.test_telemetry()
-    '''
 
-    tests.mw.UDP_telemetry_loop()
 
 
 if __name__ == '__main__':
