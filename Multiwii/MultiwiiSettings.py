@@ -18,12 +18,13 @@ class Settings(object):
         self.TELEMETRY_TIME = 1
 
         # Raspberry Pi UDP Server attributes
-        self.ip_address = "169.254.248.2"
+        self.ip_address = "192.168.1.1"
         self.port = 4445
+        self.address = (self.ip_address, self.port)
 
         # Serial port configuration
         self.serial_port = serial.Serial()
-        self.serial_port.port = "COM5"
+        self.serial_port.port = "COM6"
         self.serial_port.baudrate = 115200
         self.serial_port.bytesize = serial.EIGHTBITS
         self.serial_port.parity = serial.PARITY_NONE

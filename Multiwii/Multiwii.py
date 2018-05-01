@@ -239,7 +239,7 @@ class MultiWii(object):
 
     def UDP_telemetry_loop(self):
 
-        sock = self.start_UDP_server()
+        sock = self.__start_UDP_server()
 
         if self.UDP_server_started:
 
@@ -277,16 +277,15 @@ class MultiWii(object):
         if not self.UDP_server_started:
 
             try:
-                address = (self.settings.ip_address, self.settings.port)
+                address = self.settings.address
                 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
                 print("Socket creation: Socket created!")
-                self.sock.bind(address)
+                sock.bind(address)
                 print("Socket binding: Socket bound!")
                 self.UDP_server_started = True
                 return sock
 
             except socket.error as err:
-                print("Error: " + str(err))
                 print("Error starting server: {}".format(err))
         else:
             print("Server already started!")
@@ -296,7 +295,7 @@ class MultiWii(object):
 
         code = struct.pack('<h', code)
         size = struct.pack('<h', size)
-        data = struct.pack('<h' * int(size / 2)) # int? float?
+        data = struct.pack('<h' * int(size / 2), data) # int? float?
         package = code + size + data
 
         return package
