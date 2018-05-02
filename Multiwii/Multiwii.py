@@ -49,7 +49,10 @@ class MultiWii(object):
     def __init__(self):
 
         self.drone = Drone.Drone()
-        self.UDP_server_started = False
+        self.udp_server_started = False
+        self.sock = ""
+        self.udp_telemetry = False
+        self.telemetry = False
 
         try:
             self.settings = MultiwiiSettings.Settings()
@@ -212,9 +215,11 @@ class MultiWii(object):
 
     def telemetry_loop(self):
 
+        self.telemetry = True
+
         timer = time.time()
 
-        while True:
+        while self.telemetry:
 
             if time.time() - timer >= self.settings.TELEMETRY_TIME:
 
@@ -238,21 +243,21 @@ class MultiWii(object):
 
                 timer = time.time()
 
-    def UDP_telemetry_loop(self):
+    def udp_telemetry_loop(self):
 
-        sock = self.__start_UDP_server()
+        if self.udp_server_started:
 
-        if self.UDP_server_started:
+            self.udp_telemetry = True
 
             timer = time.time()
 
-            while True:
+            while self.udp_telemetry:
 
                 if time.time() - timer >= self.settings.TELEMETRY_TIME:
 
                     # need to check byte conversion
                     if self.settings.MSP_ALTITUDE:
-                        sock.sendto(self.__create_package(109, 8, self.get_altitude()))
+                        self.sock.sendto(self.__create_package(109, 8, self.get_altitude()))
 
                     if self.settings.MSP_ATTITUDE:
                         self.get_attitude()
@@ -271,25 +276,34 @@ class MultiWii(object):
 
                     timer = time.time()
         else:
-            return self.UDP_server_started
+            return self.udp_server_started
 
-    def __start_UDP_server(self):
+    def __start_udp_server(self):
 
-        if not self.UDP_server_started:
+        if not self.udp_server_started:
 
             try:
                 address = self.settings.address
-                sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+                self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
                 print("Socket creation: Socket created!")
-                sock.bind(address)
+                self.sock.bind(address)
                 print("Socket binding: Socket bound!")
-                self.UDP_server_started = True
-                return sock
+                self.udp_server_started = True
 
             except socket.error as err:
                 print("Error starting server: {}".format(err))
         else:
             print("Server already started!")
+
+    def stop_telemetry(self): self.telemetry = False
+
+    def stop_udp_telemetry(self):
+
+        self.udp_telemetry = False
+
+        if self.sock != "":
+            self.udp_server_started = False
+            self.sock.close()
 
     @staticmethod
     def __create_package(code, size, data):
