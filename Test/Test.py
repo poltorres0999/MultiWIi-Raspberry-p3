@@ -1,18 +1,18 @@
+import socket
 import time
+import _thread
+import struct
+import threading
 
 from Multiwii.Multiwii import MultiWii
 
 
+
 class Test:
 
-    def __init__(self, serial_port, udp_communication, ip_address, port):
+    def __init__(self):
         self.mw = MultiWii()
-        self.mw.settings.serial_port = serial_port
-        self.mw.settings.udp_communication = udp_communication
-        self.mw.settings.ip_address = ip_address
-        self.mw.settings.port = port
 
-    # self.altitude = {'estalt': 0, 'vario': 0, 'elapsed': 0, 'timestamp': 0}
     def test_altitude(self):
 
         altitude = self.mw.get_altitude()
@@ -22,9 +22,6 @@ class Test:
         print("elapsed: {}".format(altitude["elapsed"]))
         print("timestamp: {}".format(altitude["timestamp"]))
         print("-------------------\n")
-
-    # self.raw_imu = {'accx': 0, 'accy': 0, 'accz': 0, 'gyrx': 0, 'gyry': 0, 'gyrz': 0, 'magx': 0, 'magy': 0,
-    #                   'magz': 0, 'elapsed': 0, 'timestamp': 0}
 
     def test_raw_imu(self):
 
@@ -80,6 +77,44 @@ class Test:
             print("------------------")
             
         '''
+
+    def test_udp_telemetry(self):
+
+        server_started = False
+
+        try:
+            address = self.mw.settings.address
+            sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            print("Socket creation: Socket created!")
+            sock.bind(address)
+            print("Socket binding: Socket bound!")
+            server_started = True
+
+        except socket.error as err:
+            print("Error starting server: {}".format(err))
+
+        if server_started:
+
+            t = _thread.start_new_thread(self.mw.udp_telemetry_loop())
+
+            if not t:
+                print("Error: MultiWii server not started")
+            else:
+                time_start = time.time()
+                timer = time.time()
+
+                while time_start - time.time() < 10:
+
+                    if time.time() - timer >= self.mw.settings.TELEMETRY_TIME:
+
+                        data, address = sock.recv(4096)
+                        print("Received {} bytes from {}".format(len(data), address))
+                        code = struct.unpack('<h', data[:2])[0]
+                        size = struct.unpack('<h', data[2:4])[0]
+                        data = struct.unpack('<' + 'h' * int(size / 2), data[4:size + 4])
+
+
+
 
 def main():
     tests = Test("COM5", False, "", "")

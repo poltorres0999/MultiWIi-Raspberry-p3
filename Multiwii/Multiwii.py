@@ -46,7 +46,7 @@ class MultiWii(object):
     IS_SERIAL = 211
     DEBUG = 254
 
-    def __init__(self):
+    def __init__(self): # Add conf file to the constructor
 
         self.drone = Drone.Drone()
         self.udp_server_started = False
@@ -257,7 +257,7 @@ class MultiWii(object):
 
                     # need to check byte conversion
                     if self.settings.MSP_ALTITUDE:
-                        self.sock.sendto(self.__create_package(109, 8, self.get_altitude()))
+                        self.sock.sendto(self.__create_package(109, 8, self.get_altitude()), self.settings.address)
 
                     if self.settings.MSP_ATTITUDE:
                         self.get_attitude()
@@ -310,7 +310,7 @@ class MultiWii(object):
 
         code = struct.pack('<h', code)
         size = struct.pack('<h', size)
-        data = struct.pack('<h' * len(data), data)
+        data = struct.pack('<'+'h' * len(data), *data)
         package = code + size + data
 
         return package
