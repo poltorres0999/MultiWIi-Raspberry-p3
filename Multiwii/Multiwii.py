@@ -280,19 +280,19 @@ class MultiWii(object):
                     if self.settings.MSP_RC:
                         rc = self.get_rc()
                         data = [rc["roll"], rc["pitch"], rc["yaw"], rc["throttle"]]
-                        self.sock.sendto(self.__create_package(self.RC, 18, data),
+                        self.sock.sendto(self.__create_package(self.RC, 8, data),
                                          (self.settings.ip_address, 4446))
 
                     if self.settings.MSP_MOTOR:
                         motor = self.get_motor()
                         data = [motor['m1'], motor['m2'], motor['m3'], motor['m4']]
-                        self.sock.sendto(self.__create_package(self.MOTOR, 18, data),
+                        self.sock.sendto(self.__create_package(self.MOTOR, 8, data),
                                          (self.settings.ip_address, 4446))
 
                     if self.settings.MSP_SERVO:
                         servo = self.get_servo()
-                        data = [servo['m1'], servo['m2'], servo['m3'], servo['m4']]
-                        self.sock.sendto(self.__create_package(self.SERVO, 18, data),
+                        data = [servo['s1'], servo['s2'], servo['s3'], servo['s4']]
+                        self.sock.sendto(self.__create_package(self.SERVO, 8, data),
                                          (self.settings.ip_address, 4446))
 
                     timer = time.time()
