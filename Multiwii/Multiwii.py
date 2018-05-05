@@ -99,7 +99,6 @@ class MultiWii(object):
             preamble = self.serial.read()
             direction = self.serial.read()
             size = struct.unpack('<b', self.serial.read())[0]
-            print(size)
             cmd = self.serial.read()
             data = self.serial.read(size)
             total_data = struct.unpack('<' + 'h' * int((size / 2)), data)
@@ -245,6 +244,8 @@ class MultiWii(object):
 
     def udp_telemetry_loop(self):
 
+        self.__start_udp_server()
+
         if self.udp_server_started:
 
             self.udp_telemetry = True
@@ -257,7 +258,9 @@ class MultiWii(object):
 
                     # need to check byte conversion
                     if self.settings.MSP_ALTITUDE:
-                        self.sock.sendto(self.__create_package(109, 8, self.get_altitude()), self.settings.address)
+                        altitude = self.get_altitude()
+                        data = [altitude['estalt'], altitude['vario']]
+                        self.sock.sendto(self.__create_package(109, 4, data), (self.settings.ip_address, 4446))
 
                     if self.settings.MSP_ATTITUDE:
                         self.get_attitude()

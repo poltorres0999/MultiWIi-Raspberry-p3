@@ -9,7 +9,7 @@ class Settings(object):
         # Decides which functions will be executed in the loop method of the Multiwii
         self.MSP_IDENT = False
         self.MSP_PID = False
-        self.MSP_RAW_IMU = True
+        self.MSP_RAW_IMU = False
         self.MSP_SERVO = False
         self.MSP_MOTOR = False
         self.MSP_RC = False
@@ -18,13 +18,13 @@ class Settings(object):
         self.TELEMETRY_TIME = 1
 
         # Raspberry Pi UDP Server attributes
-        self.ip_address = "192.168.1.1"
+        self.ip_address = "127.0.0.1"
         self.port = 4445
         self.address = (self.ip_address, self.port)
 
         # Serial port configuration
         self.serial_port = serial.Serial()
-        self.serial_port.port = "COM6"
+        self.serial_port.port = "COM5"
         self.serial_port.baudrate = 115200
         self.serial_port.bytesize = serial.EIGHTBITS
         self.serial_port.parity = serial.PARITY_NONE

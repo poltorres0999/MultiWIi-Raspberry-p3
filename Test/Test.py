@@ -2,7 +2,7 @@ import socket
 import time
 import _thread
 import struct
-import threading
+
 
 from Multiwii.Multiwii import MultiWii
 
@@ -83,7 +83,7 @@ class Test:
         server_started = False
 
         try:
-            address = self.mw.settings.address
+            address = (self.mw.settings.ip_address, 4446)
             sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
             print("Socket creation: Socket created!")
             sock.bind(address)
@@ -95,7 +95,7 @@ class Test:
 
         if server_started:
 
-            t = _thread.start_new_thread(self.mw.udp_telemetry_loop())
+            t = _thread.start_new_thread(self.mw.udp_telemetry_loop, ())
 
             if not t:
                 print("Error: MultiWii server not started")
@@ -107,26 +107,20 @@ class Test:
 
                     if time.time() - timer >= self.mw.settings.TELEMETRY_TIME:
 
-                        data, address = sock.recv(4096)
-                        print("Received {} bytes from {}".format(len(data), address))
+                        data = sock.recv(40)
+
+                        print("Received {} ".format(len(data)))
                         code = struct.unpack('<h', data[:2])[0]
                         size = struct.unpack('<h', data[2:4])[0]
                         data = struct.unpack('<' + 'h' * int(size / 2), data[4:size + 4])
 
-
-
+                        print("Code: {0} Size: {1} Data: {2}".format(code, size, data))
 
 def main():
-    tests = Test("COM5", False, "", "")
+    tests = Test()
 
-    while 1:
-        #tests.test_altitude()
-        #time.sleep(1)
-        tests.test_raw_imu()
-        #tests.test_altitude()
-        #tests.test_set_rc()
-        #time.sleep(0.04)
-        #tests.test_telemetry()
+    tests.test_udp_telemetry()
+
 
 
 
