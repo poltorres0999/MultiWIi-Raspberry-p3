@@ -69,7 +69,7 @@ class MultiWii(object):
         for i in struct.pack('<2B%dH' % len(data), *total_data[3:len(total_data)]):
             checksum = checksum ^ ord(chr(i))
         total_data.append(checksum)
-        print(total_data)
+
         try:
 
             header = struct.pack('<c', total_data[0].encode('ascii'))
@@ -78,7 +78,6 @@ class MultiWii(object):
             data = struct.pack('2B%dHB' % len(data), *total_data[3:len(total_data)])
 
             package = header + preamble + direction + data
-            print(package)
 
             b = None
             b = self.serial.write(package)
@@ -256,11 +255,11 @@ class MultiWii(object):
 
                 if time.time() - timer >= self.settings.TELEMETRY_TIME:
 
-                    # need to check byte conversion
                     if self.settings.MSP_ALTITUDE:
                         altitude = self.get_altitude()
                         data = [altitude['estalt'], altitude['vario']]
-                        self.sock.sendto(self.__create_package(109, 4, data), (self.settings.ip_address, 4446))
+                        self.sock.sendto(self.__create_package(self.ALTITUDE, 4, data),
+                                         (self.settings.ip_address, 4446))
 
                     if self.settings.MSP_ATTITUDE:
                         self.get_attitude()

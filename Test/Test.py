@@ -103,13 +103,12 @@ class Test:
                 time_start = time.time()
                 timer = time.time()
 
-                while time_start - time.time() < 10:
+                while time.time() - time_start < 10:
 
                     if time.time() - timer >= self.mw.settings.TELEMETRY_TIME:
 
                         data = sock.recv(40)
 
-                        print("Received {} ".format(len(data)))
                         code = struct.unpack('<h', data[:2])[0]
                         size = struct.unpack('<h', data[2:4])[0]
                         data = struct.unpack('<' + 'h' * int(size / 2), data[4:size + 4])
