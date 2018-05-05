@@ -9,7 +9,7 @@ class Settings(object):
         # Decides which functions will be executed in the loop method of the Multiwii
         self.MSP_IDENT = False
         self.MSP_PID = False
-        self.MSP_RAW_IMU = False
+        self.MSP_RAW_IMU = True
         self.MSP_SERVO = False
         self.MSP_MOTOR = False
         self.MSP_RC = False

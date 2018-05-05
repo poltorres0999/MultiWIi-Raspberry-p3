@@ -258,6 +258,7 @@ class MultiWii(object):
                     if self.settings.MSP_ALTITUDE:
                         altitude = self.get_altitude()
                         data = [altitude['estalt'], altitude['vario']]
+
                         self.sock.sendto(self.__create_package(self.ALTITUDE, 4, data),
                                          (self.settings.ip_address, 4446))
 
@@ -265,7 +266,12 @@ class MultiWii(object):
                         self.get_attitude()
 
                     if self.settings.MSP_RAW_IMU:
-                        self.get_raw_imu()
+                        raw_imu = self.get_raw_imu()
+                        data = [raw_imu["accx"], raw_imu["accy"], raw_imu["accz"], raw_imu["gyrx"], raw_imu["gyry"],
+                                raw_imu["gyrz"], raw_imu["magx"], raw_imu["magy"], raw_imu["magz"]]
+
+                        self.sock.sendto(self.__create_package(self.RAW_IMU, 18, data),
+                                         (self.settings.ip_address, 4446))
 
                     if self.settings.MSP_RC:
                         self.get_rc()

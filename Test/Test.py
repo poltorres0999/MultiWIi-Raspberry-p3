@@ -7,7 +7,6 @@ import struct
 from Multiwii.Multiwii import MultiWii
 
 
-
 class Test:
 
     def __init__(self):
@@ -55,8 +54,8 @@ class Test:
 
     def test_telemetry(self):
 
-        self.mw.telemetry_loop()
-    '''
+        _thread.start_new_thread(self.mw.telemetry_loop, ())
+
         if self.mw.settings.MSP_ALTITUDE:
             alt = self.mw.drone.altitude
             print("-------Altitude--------\n")
@@ -75,8 +74,6 @@ class Test:
             print("--------Rc--------")
             print("Roll: %f, Pitch: %f, Yaw: %f, Throttle: %f" % (rc["roll"], rc["pitch"], rc["yaw"], rc["throttle"]))
             print("------------------")
-            
-        '''
 
     def test_udp_telemetry(self):
 
@@ -114,6 +111,7 @@ class Test:
                         data = struct.unpack('<' + 'h' * int(size / 2), data[4:size + 4])
 
                         print("Code: {0} Size: {1} Data: {2}".format(code, size, data))
+
 
 def main():
     tests = Test()
