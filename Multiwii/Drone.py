@@ -2,7 +2,7 @@ class Drone:
 
     def __init__(self):
         self.armed = False
-        self.ident = {'version': 0, 'multitype': 0, 'capability': 0}
+        self.indent = {'version': 0, 'multitype': 0, 'capability': 0}
         self.attitude = {'angx': 0, 'angy': 0, 'heading': 0, 'elapsed': 0, 'timestamp': 0}
         self.altitude = {'estalt': 0, 'vario': 0, 'elapsed': 0, 'timestamp': 0}
         self.PID_coef = {'rp': 0, 'ri': 0, 'rd': 0, 'pp': 0, 'pi': 0, 'pd': 0, 'yp': 0, 'yi': 0, 'yd': 0}

@@ -263,7 +263,11 @@ class MultiWii(object):
                                          (self.settings.ip_address, 4446))
 
                     if self.settings.MSP_ATTITUDE:
-                        self.get_attitude()
+                        attitude = self.get_attitude()
+                        data = [attitude['angx'], attitude['angy'], attitude['heading']]
+
+                        self.sock.sendto(self.__create_package(self.ATTITUDE, 6, data),
+                                         (self.settings.ip_address, 4446))
 
                     if self.settings.MSP_RAW_IMU:
                         raw_imu = self.get_raw_imu()
@@ -274,13 +278,22 @@ class MultiWii(object):
                                          (self.settings.ip_address, 4446))
 
                     if self.settings.MSP_RC:
-                        self.get_rc()
+                        rc = self.get_rc()
+                        data = [rc["roll"], rc["pitch"], rc["yaw"], rc["throttle"]]
+                        self.sock.sendto(self.__create_package(self.RC, 18, data),
+                                         (self.settings.ip_address, 4446))
 
                     if self.settings.MSP_MOTOR:
-                        self.get_motor()
+                        motor = self.get_motor()
+                        data = [motor['m1'], motor['m2'], motor['m3'], motor['m4']]
+                        self.sock.sendto(self.__create_package(self.MOTOR, 18, data),
+                                         (self.settings.ip_address, 4446))
 
                     if self.settings.MSP_SERVO:
-                        self.get_servo()
+                        servo = self.get_servo()
+                        data = [servo['m1'], servo['m2'], servo['m3'], servo['m4']]
+                        self.sock.sendto(self.__create_package(self.SERVO, 18, data),
+                                         (self.settings.ip_address, 4446))
 
                     timer = time.time()
         else:
